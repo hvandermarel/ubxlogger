@@ -55,9 +55,9 @@ if [ ${diskusage} -ge ${max_disk_usage} ]; then
    #echo $candidates
    daycount=0
    for d in ${candidates}; do
-      echo "Purge ubx data files $d/*_MO.ubx.gz"
-      echo $(date -u +"%F %R") "Purge ubx data files $d/*_MO.ubx.gz" >> ${logfile}
-      rm $d/*_MO.ubx.gz
+      echo "Purge ubx data files $d/*_MO.??x.gz"
+      echo $(date -u +"%F %R") "Purge ubx data files $d/*_MO.??x.gz" >> ${logfile}
+      rm $d/*_MO.??x.gz
       rmdir $d
       daycount=$((daycount+1))
       # delete a maximum number of days at a time ...
@@ -67,7 +67,7 @@ if [ ${diskusage} -ge ${max_disk_usage} ]; then
       # stop when disk size is below the limit after deleting minimum number of days
       diskusage=$(df ${archivedir} | tail -1 | xargs | cut -d " " -f 5)
       diskusage=${diskusage%\%}
-      if [ $daycount -ge ${min_days_to_delete} ] && [ ${diskusage} -ge ${max_disk_usage} ]; then
+      if [ $daycount -ge ${min_days_to_delete} ] && [ ${diskusage} -lt ${max_disk_usage} ]; then
          break
       fi
    done
